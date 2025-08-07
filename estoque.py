@@ -32,12 +32,22 @@ Produto ID: {id}
     Quantidade: {quantidade}
     Preço: {preco}
 """)
+        
+        
 def atualizar_quantidade(nova_quantidade, id_produto):
 
     comando = """UPDATE produtos SET quantidade = ? WHERE ID = ?"""
     cur.execute(comando, (nova_quantidade, id_produto))
 
     con.commit()
+
+
+def verificar_produto(id_produto):
+    comando = ("SELECT * FROM produtos WHERE ID = ?")
+    cur.execute(comando, (id_produto,))
+    produto = cur.fetchall()
+
+    return produto
 
 
 def deletar_produto(id_produto):
