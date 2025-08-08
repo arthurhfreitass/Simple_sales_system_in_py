@@ -1,6 +1,7 @@
 from db import con, cur
 from datetime import datetime
 
+
 class Venda:
     def __init__(self, id_produto, quantidade, preco, data=None, id=None):
         self.id = id
@@ -10,7 +11,7 @@ class Venda:
         self.data = data or datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     def salvar_vendas(self):
-        comando =  """
+        comando = """
             INSERT INTO vendas (id_produto, quantidade, preco, data)
             VALUES (?, ?, ?, ?)
         """
@@ -20,11 +21,12 @@ class Venda:
         cur.execute(comando, dados)
         con.commit()
 
+
 def selecionar_produto(id_produto, id_cliente):
-    comando = ("SELECT * FROM produtos WHERE ID = ?")
+    comando = "SELECT * FROM produtos WHERE ID = ?"
     cur.execute(comando, (id_produto,))
     produto_escolhido = cur.fetchall()
-    
+
     for produto in produto_escolhido:
         if produto:
             id, nome, descricao, quantidade, preco = produto
@@ -43,10 +45,17 @@ def selecionar_produto(id_produto, id_cliente):
             if quantidade_produto <= quantidade:
                 calculando_preco = preco * quantidade_produto
 
-                comando2 = ("""INSERT INTO carrinho (id_produto, id_cliente, nome, descricao, quantidade, preco)
-                            VALUES(?,?,?,?,?,?)""")
+                comando2 = """INSERT INTO carrinho (id_produto, id_cliente, nome, descricao, quantidade, preco)
+                            VALUES(?,?,?,?,?,?)"""
 
-                dados = (id, id_cliente, nome, descricao, quantidade_produto, calculando_preco)
+                dados = (
+                    id,
+                    id_cliente,
+                    nome,
+                    descricao,
+                    quantidade_produto,
+                    calculando_preco,
+                )
 
                 cur.execute(comando2, dados)
                 con.commit()
@@ -61,7 +70,3 @@ def selecionar_produto(id_produto, id_cliente):
             print("Item adicionado ao carrinho com sucesso!")
         else:
             print("Produto não encontrado!")
-
-
-
-

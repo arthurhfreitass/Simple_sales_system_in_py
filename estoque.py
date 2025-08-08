@@ -1,13 +1,13 @@
 from db import con, cur
 
+
 class Produto:
     def __init__(self, nome, descricao, quantidade, preco, id=None):
         self.id = id
         self.nome = nome
         self.descricao = descricao
         self.quantidade = quantidade
-        self.preco = preco 
-
+        self.preco = preco
 
     def salvar_produtos(self):
         comando = """
@@ -19,21 +19,24 @@ class Produto:
         cur.execute(comando, dados)
         con.commit()
 
+
 def listar_produtos():
     comando = "SELECT * FROM produtos"
     cur.execute(comando)
     produtos = cur.fetchall()
     for produto in produtos:
         id, nome, descricao, quantidade, preco = produto
-        print(f"""
+        print(
+            f"""
 Produto ID: {id}
     Nome: {nome}
     Descricao: {descricao}
     Quantidade: {quantidade}
     Preço: {preco}
-""")
-        
-        
+"""
+        )
+
+
 def atualizar_quantidade(nova_quantidade, id_produto):
 
     comando = """UPDATE produtos SET quantidade = ? WHERE ID = ?"""
@@ -43,7 +46,7 @@ def atualizar_quantidade(nova_quantidade, id_produto):
 
 
 def verificar_produto(id_produto):
-    comando = ("SELECT * FROM produtos WHERE ID = ?")
+    comando = "SELECT * FROM produtos WHERE ID = ?"
     cur.execute(comando, (id_produto,))
     produto = cur.fetchall()
 
