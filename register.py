@@ -52,3 +52,12 @@ def verificar_login(email):
         return id_cliente[0]
     else:
         return None
+    
+def pegar_nome_cliente(id_cliente):
+    comando = """SELECT nome FROM clientes WHERE id = ?"""
+    cur.execute(comando, (id_cliente,))
+    nome = cur.fetchone()
+
+    id_cliente = nome
+
+    return nome[0]

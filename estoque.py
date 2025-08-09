@@ -57,6 +57,36 @@ def deletar_produto(id_produto):
     comando = """
     DELETE FROM produtos WHERE id = ?"""
     cur.execute(comando, (id_produto,))
-
     con.commit()
-    con.close()
+
+
+def listar_vendas():
+    comando = """SELECT * FROM vendas"""
+    cur.execute(comando)
+    vendas = cur.fetchall()
+
+    print("---" * 7)
+    print("Relatorio de Vendas")
+    print("---" * 7)
+
+    quantidade_vendas = 0
+    valor_vendas = 0
+
+    for vendas_i in vendas:
+        id, id_produto, quantidade, preco, data = vendas_i
+        print(
+            f"""
+Venda ID: {id}
+    Produto id: {id_produto}
+    Quantidade: {quantidade}
+    Preço: {preco}
+    Data: {data}
+"""
+        )
+        quantidade_vendas += id
+        valor_vendas += preco
+
+        print()
+        print("---"*20)
+        print(f"Totais de vendas: {quantidade_vendas} | Valor total das vendas: R$ {valor_vendas:.2f}")
+        print("---"*20)
