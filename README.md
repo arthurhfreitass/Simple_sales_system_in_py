@@ -54,9 +54,4 @@ Para rodar o projeto, siga os passos abaixo:
 
 O programa irá iniciar no terminal e você poderá interagir com os menus.
 
-## Tecnologias Utilizadas
-
-* Python 3
-* Módulo `sqlite3` para gerenciamento do banco de dados.
-
 ---
