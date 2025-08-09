@@ -39,7 +39,7 @@ Para rodar o projeto, siga os passos abaixo:
 
 1.  **Clone o repositório:**
     ```bash
-    git clone [URL_DO_SEU_REPOSITORIO]
+    git clone https://github.com/arthurhfreitass/Simple_sales_system_in_py.git
     ```
 
 2.  **Entre na pasta do projeto:**
