@@ -77,6 +77,11 @@ def finalizar_compra(id_cliente):
     comando = """SELECT * FROM carrinho WHERE id_cliente = ?"""
     cur.execute(comando, (id_cliente,))
     carrinho = cur.fetchall()
+
+    if not carrinho:
+        print("Seu carrinho está vazio.")
+        return
+
     nome_cliente = pegar_nome_cliente(id_cliente)
 
     print("---" * 15)
@@ -88,15 +93,13 @@ def finalizar_compra(id_cliente):
     num = 1
     preco_final = 0
 
-    for finalizar in carrinho:
-        if finalizar:
-            id, id_cliente, id_produto, nome, descricao, quantidade, preco = finalizar
-
-            print(f"""Produto {num}: Nome: {nome} | Quantidade: {quantidade} | Preço: {preco}"""
-                  )
-            num += 1
-            preco_final += preco
-            print()
+    for item_do_carrinho in carrinho:
+        id_carrinho, id_cliente_carrinho, id_produto, nome, descricao, quantidade, preco = item_do_carrinho
+        print(f"Produto {num}: Nome: {nome} | Quantidade: {quantidade} | Preço: R$ {preco:.2f}")
+        num += 1
+        preco_final += preco
+    
+    print()
     print("---" * 15)
     print(f"TOTAL DO CARRINHO: R${preco_final:.2f}")
     print("---" * 15)
@@ -116,21 +119,30 @@ def finalizar_compra(id_cliente):
             print("Sua compra foi concluída com sucesso e em breve você receberá mais detalhes por e-mail.")
             print("Agradecemos a confiança e volte sempre!")
             print("---" * 10)
-            
-            for apagando_carrinho in finalizar:
-                if apagando_carrinho:
-                    cur.execute("DELETE FROM carrinho WHERE id_cliente = ? ", (id_cliente,))
-                    venda = Venda(id_produto, quantidade, preco)
-                    venda.salvar_vendas(con, cur)
-                    con.commit()
-            
-        elif decisao == ("2"):
-            print(f"Pedido finalizado, {nome_cliente}!")
 
-            for apagando_carrinho in finalizar:
-                if apagando_carrinho:
-                    cur.execute("DELETE FROM carrinho WHERE id_cliente = ? ", (id_cliente,))
-                    con.commit()
+            for item_do_carrinho in carrinho:
+                id_carrinho, id_cliente_carrinho, id_produto, nome, descricao, quantidade, preco = item_do_carrinho
+                venda = Venda(id_produto, quantidade, preco)
+                venda.salvar_vendas(con, cur)
+            
+            cur.execute("DELETE FROM carrinho WHERE id_cliente = ?", (id_cliente,))
+            con.commit()
+            
+        elif decisao == "2":
+            print("Pedido cancelado. Itens removidos do carrinho.")
+
+            for item_do_carrinho in carrinho:
+                id_carrinho, id_cliente_carrinho, id_produto, nome_item, descricao, quantidade_item, preco = item_do_carrinho
+                
+                cur.execute("SELECT quantidade FROM produtos WHERE id = ?", (id_produto,))
+                quantidade_atual = cur.fetchone()[0]
+
+                nova_quantidade_estoque = quantidade_atual + quantidade_item
+                atualizar_quantidade(nova_quantidade_estoque, id_produto)
+            
+            cur.execute("DELETE FROM carrinho WHERE id_cliente = ?", (id_cliente,))
+            con.commit()
+
     else:
         print("Selecione uma opção valida.")
         print()
